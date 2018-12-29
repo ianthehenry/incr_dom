@@ -135,7 +135,7 @@ let start
       (type model)
       ?(debug = false)
       ?(stop = Deferred.never ())
-      ~bind_to_element_with_id
+      ?bind_to
       ~initial_model
       (module App : App_intf.S with type Model.t = model)
   =
@@ -177,9 +177,14 @@ let start
      Action_log.init ();
      let html = Incr.Observer.value_exn app |> Component.view in
      let html_dom = Vdom.Node.to_dom html in
-     let elem = Dom_html.getElementById_exn bind_to_element_with_id in
-     let parent = Option.value_exn ~here:[%here] (Js.Opt.to_option elem##.parentNode) in
-     Dom.replaceChild parent html_dom elem;
+     let elt = (html_dom :> Dom.element Js.t) in
+     (match bind_to with
+      | None -> Dom_html.document##.body := html_dom
+      | Some node ->
+        let parent =
+          Option.value_exn ~here:[%here] (Js.Opt.to_option node##.parentNode)
+        in
+        Dom.replaceChild parent elt node);
      (* we make sure to call [viewport_changed] whenever the window resizes or the scroll
         container in which our HTML is located is scrolled. *)
      let call_viewport_changed_on_event event_name where =

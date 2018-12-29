@@ -1,5 +1,6 @@
 open! Core_kernel
 open! Async_kernel
+open! Js_of_ocaml
 
 (** For starting up an [Incr_dom] app. *)
 
@@ -11,7 +12,7 @@ open! Async_kernel
 val start
   :  ?debug:bool (* print info to JS console - default false *)
   -> ?stop:unit Deferred.t
-  -> bind_to_element_with_id:string
+  -> ?bind_to:Dom.node Js.t
   -> initial_model:'model
   -> (module App_intf.S with type Model.t = 'model)
   -> unit
