@@ -90,13 +90,7 @@ end = struct
     let set_flag b = global##.logFlag := Js.bool b in
     set_flag false;
     global##.startLogging := Js.wrap_callback (fun () -> set_flag true);
-    global##.stopLogging := Js.wrap_callback (fun () -> set_flag false);
-    let init_message =
-      " Incr_dom action logging is disabled by default.\n\
-      \ To start logging actions, type startLogging()\n\
-      \ To stop logging actions, type stopLogging()\n"
-    in
-    Firebug.console##log (Js.string init_message)
+    global##.stopLogging := Js.wrap_callback (fun () -> set_flag false)
   ;;
 
   let should_log () =
